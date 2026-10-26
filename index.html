@@ -558,16 +558,124 @@
     .btn.gold::after, .btn.solid::after, .stage, .wotd, .cred .ico { transition: none; }
     .stage:hover, .wotd:hover { translate: none; }
   }
+
+  /* ===== v10: stats, ambient light, QR ===== */
+  #root { position: relative; isolation: isolate; }
+  .ambient { position: fixed; inset: 0; z-index: -1; pointer-events: none; overflow: hidden; }
+  .ambient i { position: absolute; border-radius: 50%; will-change: transform; }
+  .ambient .a1 { width: 70vmax; height: 70vmax; top: -22vmax; right: -20vmax; background: radial-gradient(closest-side, color-mix(in srgb, var(--gold) 26%, transparent), transparent); animation: drift1 26s ease-in-out infinite alternate; }
+  .ambient .a2 { width: 60vmax; height: 60vmax; bottom: -24vmax; left: -22vmax; background: radial-gradient(closest-side, color-mix(in srgb, var(--arch-1) 38%, transparent), transparent); animation: drift2 32s ease-in-out infinite alternate; }
+  .ambient .a3 { width: 42vmax; height: 42vmax; top: 38%; left: 28%; background: radial-gradient(closest-side, color-mix(in srgb, var(--gold) 13%, transparent), transparent); animation: drift3 38s ease-in-out infinite alternate; }
+  @keyframes drift1 { to { transform: translate(-9vmax, 12vmax) scale(1.12); } }
+  @keyframes drift2 { to { transform: translate(12vmax, -10vmax) scale(1.08); } }
+  @keyframes drift3 { to { transform: translate(-12vmax, 9vmax) scale(.9); } }
+
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); margin-top: clamp(36px, 6vw, 72px); border-block: 1px solid var(--line); }
+  .stat { padding: clamp(22px, 4vw, 40px) clamp(10px, 2vw, 28px); border-inline-start: 1px solid var(--line); display: flex; flex-direction: column; align-items: center; gap: 6px; text-align: center; min-width: 0; }
+  .stat:first-child { border-inline-start: 0; }
+  .stat b { font-family: var(--font-display); font-weight: 700; font-size: clamp(2.4rem, 8vw, 4.6rem); line-height: 1.05; color: var(--gold-text); direction: ltr; font-variant-numeric: tabular-nums; }
+  .stat > span { font-weight: 500; color: var(--muted); font-size: clamp(.88rem, 2vw, 1.05rem); line-height: 1.5; }
+
+  .share { display: grid; grid-template-columns: auto 1fr; gap: clamp(20px, 4vw, 48px); align-items: center; border: 1px solid var(--line); border-radius: 24px; background: var(--surface); padding: clamp(20px, 4vw, 36px); }
+  .share > * { min-width: 0; }
+  .qr { background: #F6F4EF; padding: 14px; border-radius: 18px; border: 1px solid rgba(15, 27, 51, .12); line-height: 0; }
+  .qr svg { width: clamp(132px, 24vw, 184px); height: auto; display: block; max-width: 100%; }
+  .share h2 { font-size: clamp(1.5rem, 3.8vw, 2.2rem); font-weight: 700; }
+  .share p { color: var(--muted); margin-top: 8px; max-width: 28em; }
+
+  @media (max-width: 600px) {
+    .share { grid-template-columns: 1fr; justify-items: start; }
+    .stat { padding-inline: 6px; }
+  }
+  @media (prefers-reduced-motion: reduce) { .ambient i { animation: none; } }
+
+  .brand .logo { height: 38px; width: auto; flex: none; }
+  .sp-logo { height: 120px; width: auto; }
+
+  .brand { white-space: nowrap; }
+  @media (max-width: 600px) { .brand .logo { height: 32px; } .brand { font-size: 1.05rem; gap: 8px; } .top nav { gap: 10px; } }
+
+  /* ===== v11: booking form ===== */
+  .book { background: var(--surface); border: 1px solid var(--line); border-radius: 24px; padding: clamp(22px, 4vw, 44px); }
+  #bform { display: flex; flex-direction: column; gap: 22px; }
+  .bgrid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  .bgrid > * { min-width: 0; }
+  .field { display: flex; flex-direction: column; gap: 8px; border: 0; margin: 0; padding: 0; min-width: 0; }
+  .field label, .field legend { font-weight: 600; font-size: .98rem; padding: 0; }
+  .field em { font-style: normal; font-weight: 400; color: var(--muted); font-size: .88rem; }
+  .field input[type="text"], .field input[type="tel"], .field select, .field textarea {
+    width: 100%; min-height: 52px; padding: 10px 16px; border-radius: 14px; border: 1.5px solid var(--line);
+    background: var(--bg); color: var(--ink); font: 500 1.05rem/1.5 var(--font-body); transition: border-color .15s ease;
+  }
+  .field textarea { resize: vertical; min-height: 96px; }
+  .field input:focus, .field select:focus, .field textarea:focus { outline: none; border-color: var(--gold); box-shadow: 0 0 0 3px color-mix(in srgb, var(--gold) 30%, transparent); }
+  .field input[aria-invalid="true"] { border-color: var(--bad); }
+  .field input[type="tel"] { text-align: right; letter-spacing: .04em; font-variant-numeric: tabular-nums; }
+  #root[dir="ltr"] .field input[type="tel"] { text-align: left; }
+  .err { margin: 0; color: var(--bad); font-weight: 600; font-size: .92rem; line-height: 1.6; }
+  .err[hidden] { display: none; }
+  .seg { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+  .seg input { position: absolute; opacity: 0; pointer-events: none; }
+  .seg label {
+    display: grid; place-items: center; min-height: 52px; border-radius: 14px; border: 1.5px solid var(--line);
+    cursor: pointer; font-weight: 600; transition: border-color .15s ease, background-color .15s ease;
+  }
+  .seg label:hover { border-color: var(--gold); }
+  .seg input:checked + label { border-color: var(--gold); background: color-mix(in srgb, var(--gold) 18%, transparent); color: var(--ink); }
+  .seg input:focus-visible + label { outline: 3px solid var(--gold); outline-offset: 3px; }
+  .bactions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
+  .bnote { margin: 0; color: var(--muted); font-size: .92rem; flex: 1 1 260px; line-height: 1.7; }
+  .book .btn.gold { background: var(--gold); color: #0A1426; }
+  .bdone { display: flex; flex-direction: column; gap: 14px; align-items: flex-start; }
+  .bdone[hidden] { display: none; }
+  .bdone > svg { width: 44px; height: 44px; color: var(--ok); }
+  .bdone h3 { font-size: clamp(1.5rem, 4vw, 2rem); font-weight: 700; }
+  .bdone p { margin: 0; color: var(--muted); max-width: 36em; }
+  .bmsg {
+    margin: 0; width: 100%; white-space: pre-wrap; overflow-wrap: anywhere; padding: 16px 18px; border-radius: 14px;
+    background: var(--bg); border: 1px dashed var(--line); font: 500 1rem/1.9 var(--font-body); color: var(--ink);
+  }
+  @media (max-width: 600px) {
+    .bgrid { grid-template-columns: 1fr; }
+    .bactions .btn { flex: 1 1 100%; }
+  }
+
+  #bform[hidden] { display: none; }
 </style>
 <div dir="rtl" lang="ar" id="root">
+  <div class="ambient" aria-hidden="true"><i class="a1"></i><i class="a2"></i><i class="a3"></i></div>
   <div class="prog" id="prog" aria-hidden="true"><i></i></div>
   <div class="splash" id="splash" aria-hidden="true">
-    <div class="splash-in"><i class="sp-dia"></i><div class="sp-name">الأستاذ علي نوري المحمداوي</div><div class="sp-en">Ali Nouri Al-Muhammadawi</div><span class="sp-line"></span></div>
+    <div class="splash-in"><svg class="sp-logo" viewBox="18 14 164 178" aria-hidden="true"><defs>
+<linearGradient id="sg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F0D79A"/><stop offset=".55" stop-color="#D2AD64"/><stop offset="1" stop-color="#B08D45"/></linearGradient>
+<linearGradient id="sn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1C2F57"/><stop offset="1" stop-color="#0F1B33"/></linearGradient>
+</defs>
+<path d="M24 184V92a76 76 0 0 1 152 0v92a4 4 0 0 1-4 4H28a4 4 0 0 1-4-4z" fill="url(#sn)"/>
+<path d="M33 179V92a67 67 0 0 1 134 0v87z" fill="none" stroke="url(#sg)" stroke-width="2.2"/>
+<path d="M41 172V92a59 59 0 0 1 118 0v80z" fill="none" stroke="#D2AD64" stroke-opacity=".35" stroke-width="1"/>
+<path d="M100.00 41.00L101.91 47.38L107.78 44.22L104.62 50.09L111.00 52.00L104.62 53.91L107.78 59.78L101.91 56.62L100.00 63.00L98.09 56.62L92.22 59.78L95.38 53.91L89.00 52.00L95.38 50.09L92.22 44.22L98.09 47.38Z" fill="url(#sg)"/>
+<path d="M100 74C90 98 76 126 58 156l17 0c10-20 19-38 25-54 6 16 15 34 25 54l17 0C124 126 110 98 100 74z" fill="url(#sg)"/>
+<path d="M86 132h28" stroke="#0F1B33" stroke-width="7" stroke-linecap="round"/><path d="M88 132h24" stroke="#F0D79A" stroke-width="3.2" stroke-linecap="round"/><path d="M50 160q25-9 50 4q25-13 50-4v17q-25-9-50 4q-25-13-50-4z" fill="#F6F1E4"/>
+<path d="M100 164v17" stroke="#0F1B33" stroke-width="1.8"/>
+<path d="M60 168q20-5 36 2M64 173q16-4 32 1M140 168q-20-5-36 2M136 173q-16-4-32 1" stroke="#0F1B33" stroke-opacity=".28" stroke-width="1" fill="none"/>
+</svg><div class="sp-name">الأستاذ علي نوري المحمداوي</div><div class="sp-en">Ali Nouri Al-Muhammadawi</div><span class="sp-line"></span></div>
   </div>
   <script>try{var sp=document.getElementById('splash');if(sessionStorage.getItem('seen')){sp.remove();}else{sessionStorage.setItem('seen','1');sp.parentNode.classList.add('has-splash');}}catch(e){}</script>
   <header class="top">
     <div class="wrap">
-      <a class="brand" href="#top"><span class="mark"></span><span data-t="brand">الأستاذ علي</span></a>
+      <a class="brand" href="#top"><svg class="logo" viewBox="18 14 164 178" aria-hidden="true"><defs>
+<linearGradient id="hg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F0D79A"/><stop offset=".55" stop-color="#D2AD64"/><stop offset="1" stop-color="#B08D45"/></linearGradient>
+<linearGradient id="hn" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1C2F57"/><stop offset="1" stop-color="#0F1B33"/></linearGradient>
+</defs>
+<path d="M24 184V92a76 76 0 0 1 152 0v92a4 4 0 0 1-4 4H28a4 4 0 0 1-4-4z" fill="url(#hn)"/>
+<path d="M33 179V92a67 67 0 0 1 134 0v87z" fill="none" stroke="url(#hg)" stroke-width="2.2"/>
+<path d="M41 172V92a59 59 0 0 1 118 0v80z" fill="none" stroke="#D2AD64" stroke-opacity=".35" stroke-width="1"/>
+<path d="M100.00 41.00L101.91 47.38L107.78 44.22L104.62 50.09L111.00 52.00L104.62 53.91L107.78 59.78L101.91 56.62L100.00 63.00L98.09 56.62L92.22 59.78L95.38 53.91L89.00 52.00L95.38 50.09L92.22 44.22L98.09 47.38Z" fill="url(#hg)"/>
+<path d="M100 74C90 98 76 126 58 156l17 0c10-20 19-38 25-54 6 16 15 34 25 54l17 0C124 126 110 98 100 74z" fill="url(#hg)"/>
+<path d="M86 132h28" stroke="#0F1B33" stroke-width="7" stroke-linecap="round"/><path d="M88 132h24" stroke="#F0D79A" stroke-width="3.2" stroke-linecap="round"/><path d="M50 160q25-9 50 4q25-13 50-4v17q-25-9-50 4q-25-13-50-4z" fill="#F6F1E4"/>
+<path d="M100 164v17" stroke="#0F1B33" stroke-width="1.8"/>
+<path d="M60 168q20-5 36 2M64 173q16-4 32 1M140 168q-20-5-36 2M136 173q-16-4-32 1" stroke="#0F1B33" stroke-opacity=".28" stroke-width="1" fill="none"/>
+</svg><span data-t="brand">الأستاذ علي</span></a>
       <nav aria-label="أقسام الصفحة">
         <a class="hide-sm" href="#about" data-t="n_about">نبذة</a>
         <a class="hide-sm" href="#credentials" data-t="n_cred">المؤهلات</a>
@@ -595,7 +703,7 @@
             <svg class="i" viewBox="0 0 24 24"><path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></svg>
             <span data-t="cta1">اتصل بالأستاذ</span>
           </a>
-          <a class="btn line" href="#contact" data-t="cta2">العنوان وطرق التواصل</a>
+          <a class="btn line" href="#book" data-t="cta2">احجز موعدك</a>
         </div>
         <div class="where">
           <svg class="i" viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>
@@ -641,6 +749,12 @@
       </div>
     </section>
 
+    <div class="stats">
+      <div class="stat"><b><span class="n" data-to="20">20</span>+</b><span data-t="sx1">سنة خبرة في التدريس</span></div>
+      <div class="stat"><b><span class="n" data-to="97">97</span>%</b><span data-t="sx2">نسبة نجاح الطلاب</span></div>
+      <div class="stat"><b><span class="n" data-to="2">2</span></b><span data-t="sx3">مرحلتان دراسيتان</span></div>
+    </div>
+
     <div class="marquee" aria-hidden="true">
       <div class="mq-track">
         <div class="mq-group"><span>Speak with confidence</span><i></i><span>Grammar made clear</span><i></i><span>Think in English</span><i></i><span>Practice makes progress</span><i></i><span>Ready for the exam</span><i></i><span>Words that open doors</span><i></i></div>
@@ -657,6 +771,155 @@
         <div class="text">
           <p data-t="about_p1"><strong>الأستاذ علي نوري هاشم المحمداوي</strong>، حاصل على شهادة الماجستير، ومترجم ومدرّس للغة الإنكليزية للمرحلتين المتوسطة والإعدادية. يؤمن بأن الطالب يتعلّم أفضل حين يفهم السبب وراء كل قاعدة، لا حين يكتفي بحفظها.</p>
           <p data-t="about_p2">يعتمد في دروسه على أفضل طرق التدريس التي اكتسبها من دوراته وشهاداته، ويضبط أسلوب الشرح بحسب مستوى كل طالب، حتى يخرج من الدرس وهو واثق مما تعلّمه.</p>
+        </div>
+      </div>
+    </section>
+
+    <div class="orn" aria-hidden="true"><i></i><svg viewBox="0 0 24 24"><path d="M12 2l2.4 4.6L19 5l-1.6 4.8L22 12l-4.6 2.2L19 19l-4.6-1.6L12 22l-2.4-4.6L5 19l1.6-4.8L2 12l4.6-2.2L5 5l4.6 1.6z"/></svg><i></i></div>
+    <section class="block" id="stages">
+      <div class="sec-head">
+        <span class="tag" data-t="st_tag">المادة والمراحل</span>
+        <h2 data-t="st_h">اللغة الإنكليزية للمتوسطة والإعدادية</h2>
+      </div>
+      <div class="stages">
+        <article class="stage">
+          <div class="letters" aria-hidden="true">ABC</div>
+          <h3 data-t="s1h">المرحلة المتوسطة</h3>
+          <ul>
+            <li data-t="s1a">تأسيس قوي في القواعد والمفردات</li>
+            <li data-t="s1b">نطق وقراءة صحيحة</li>
+            <li data-t="s1c">ثقة في الكلام والكتابة منذ البداية</li>
+          </ul>
+        </article>
+        <article class="stage">
+          <div class="letters" aria-hidden="true">A+</div>
+          <h3 data-t="s2h">المرحلة الإعدادية</h3>
+          <ul>
+            <li data-t="s2a">قواعد متقدمة وفهم للنصوص</li>
+            <li data-t="s2b">تدريب على أسئلة الامتحانات</li>
+            <li data-t="s2c">كتابة ومحادثة بثقة ووضوح</li>
+          </ul>
+        </article>
+      </div>
+    </section>
+
+    <div class="orn" aria-hidden="true"><i></i><svg viewBox="0 0 24 24"><path d="M12 2l2.4 4.6L19 5l-1.6 4.8L22 12l-4.6 2.2L19 19l-4.6-1.6L12 22l-2.4-4.6L5 19l1.6-4.8L2 12l4.6-2.2L5 5l4.6 1.6z"/></svg><i></i></div>
+    <section class="block" id="practice">
+      <div class="sec-head">
+        <span class="tag" data-t="p_tag">تدرّب مع الأستاذ</span>
+        <h2 data-t="p_h">اختبر مستواك في الإنكليزية</h2>
+      </div>
+      <div class="practice">
+        <div class="quiz" id="quiz" aria-live="polite">
+          <div class="quiz-top" id="qtop" hidden>
+            <span class="qcount" id="qcount"></span>
+            <div class="qbar" aria-hidden="true"><i id="qfill"></i></div>
+          </div>
+          <div id="qbody"></div>
+        </div>
+        <aside class="wotd" id="wotd" aria-label="Word of the day"></aside>
+      </div>
+    </section>
+
+    <section class="block" id="method">
+      <div class="method">
+        <div class="sec-head">
+          <span class="tag" data-t="m_tag">طريقة التدريس</span>
+          <h2 data-t="m_h">أفضل الطرق للتدريس</h2>
+          <p data-t="m_p">أسلوب واضح ومتدرّج يضع الطالب في مركز العملية التعليمية.</p>
+        </div>
+        <div class="steps">
+          <article class="step">
+            <svg class="i" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4"/><path d="M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
+            <h3 data-t="t1h">شرح مبسّط</h3>
+            <p data-t="t1p">يبدأ من مستوى الطالب ويتدرّج بالمعلومة خطوة بخطوة حتى تثبت.</p>
+          </article>
+          <article class="step">
+            <svg class="i" viewBox="0 0 24 24"><path d="M4 20l4-1 11-11a2.1 2.1 0 0 0-3-3L5 16z"/><path d="M14 7l3 3"/></svg>
+            <h3 data-t="t2h">تطبيق عملي</h3>
+            <p data-t="t2p">أمثلة وتمارين تحوّل الفهم إلى مهارة يستخدمها الطالب بنفسه.</p>
+          </article>
+          <article class="step">
+            <svg class="i" viewBox="0 0 24 24"><path d="M4 19V9M10 19V5M16 19v-7M22 19H2"/></svg>
+            <h3 data-t="t3h">متابعة مستمرة</h3>
+            <p data-t="t3p">تقييم دوري يكشف نقاط القوة والجوانب التي تحتاج إلى دعم إضافي.</p>
+          </article>
+          <article class="step">
+            <svg class="i" viewBox="0 0 24 24"><path d="M12 20s-7-4.3-7-10a4 4 0 0 1 7-2.5A4 4 0 0 1 19 10c0 5.7-7 10-7 10z"/></svg>
+            <h3 data-t="t4h">أجواء مشجعة</h3>
+            <p data-t="t4p">احترام وصبر يمنحان الطالب الشجاعة على السؤال والمحاولة.</p>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <div class="orn" aria-hidden="true"><i></i><svg viewBox="0 0 24 24"><path d="M12 2l2.4 4.6L19 5l-1.6 4.8L22 12l-4.6 2.2L19 19l-4.6-1.6L12 22l-2.4-4.6L5 19l1.6-4.8L2 12l4.6-2.2L5 5l4.6 1.6z"/></svg><i></i></div>
+    <section class="block" id="book">
+      <div class="sec-head">
+        <span class="tag" data-t="b_tag">احجز موعدك</span>
+        <h2 data-t="b_h">طلب حجز مع الأستاذ علي</h2>
+      </div>
+      <div class="book">
+        <form id="bform" novalidate>
+          <div class="bgrid">
+            <div class="field">
+              <label for="b_name" data-t="b_name">الاسم</label>
+              <input id="b_name" name="name" type="text" autocomplete="name" required maxlength="60">
+              <p class="err" id="e_name" role="alert" hidden></p>
+            </div>
+            <div class="field">
+              <label for="b_phone"><span data-t="b_phone">رقم الهاتف</span> <em data-t="b_req">(مطلوب)</em></label>
+              <input id="b_phone" name="phone" type="tel" inputmode="tel" autocomplete="tel" dir="ltr" required maxlength="20" aria-describedby="e_phone">
+              <p class="err" id="e_phone" role="alert" hidden></p>
+            </div>
+          </div>
+
+          <fieldset class="field">
+            <legend data-t="b_stage">المرحلة الدراسية</legend>
+            <div class="seg">
+              <input type="radio" id="st_mid" name="stage" value="mid"><label for="st_mid" data-t="b_mid">المتوسطة</label>
+              <input type="radio" id="st_prep" name="stage" value="prep"><label for="st_prep" data-t="b_prep">الإعدادية</label>
+            </div>
+            <p class="err" id="e_stage" role="alert" hidden></p>
+          </fieldset>
+
+          <div class="bgrid">
+            <div class="field">
+              <label for="b_grade" data-t="b_grade">الصف</label>
+              <select id="b_grade" name="grade"></select>
+            </div>
+            <div class="field">
+              <label for="b_time" data-t="b_time">الوقت المفضل</label>
+              <select id="b_time" name="time">
+                <option value="any" data-t="tm_any">أي وقت</option>
+                <option value="morning" data-t="tm_m">صباحاً</option>
+                <option value="afternoon" data-t="tm_a">بعد الظهر</option>
+                <option value="evening" data-t="tm_e">مساءً</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="field">
+            <label for="b_note"><span data-t="b_note">ملاحظات</span> <em data-t="b_opt">(اختياري)</em></label>
+            <textarea id="b_note" name="note" rows="3" maxlength="300"></textarea>
+          </div>
+
+          <div class="bactions">
+            <button class="btn gold" type="submit" id="b_submit" data-t="b_submit">جهّز طلب الحجز</button>
+            <p class="bnote" data-t="b_hint">يفتح الطلب في واتساب الأستاذ برسالة جاهزة، وتؤكده بالإرسال. عند إطلاق التطبيق سيصبح الحجز عبره.</p>
+          </div>
+        </form>
+
+        <div class="bdone" id="bdone" hidden>
+          <svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l2.8 2.8L16 9.5"/></svg>
+          <h3 data-t="d_h">طلبك جاهز</h3>
+          <p data-t="d_p">بقيت خطوة واحدة: افتح واتساب واضغط إرسال ليصل الطلب إلى الأستاذ. لن يُعدّ الحجز مؤكداً قبل أن يردّ عليك.</p>
+          <pre class="bmsg" id="bmsg" dir="auto"></pre>
+          <div class="bactions">
+            <a class="btn gold" id="b_wa" href="#" target="_blank" rel="noopener" data-t="d_wa">افتح واتساب وأرسل الطلب</a>
+            <button class="btn line" type="button" id="b_copy" data-t="d_copy">نسخ نص الطلب</button>
+            <button class="btn line" type="button" id="b_edit" data-t="d_edit">تعديل الطلب</button>
+          </div>
         </div>
       </div>
     </section>
@@ -801,6 +1064,16 @@
       </div>
     </section>
 
+    <section class="block" id="share">
+      <div class="share">
+        <div class="qr"><svg viewBox="0 0 33 33" role="img" aria-label="QR" shape-rendering="crispEdges"><rect width="33" height="33" fill="#F6F4EF"/><path fill="#0F1B33" d="M2 2h1v1h-1zM3 2h1v1h-1zM4 2h1v1h-1zM5 2h1v1h-1zM6 2h1v1h-1zM7 2h1v1h-1zM8 2h1v1h-1zM11 2h1v1h-1zM15 2h1v1h-1zM18 2h1v1h-1zM20 2h1v1h-1zM21 2h1v1h-1zM22 2h1v1h-1zM24 2h1v1h-1zM25 2h1v1h-1zM26 2h1v1h-1zM27 2h1v1h-1zM28 2h1v1h-1zM29 2h1v1h-1zM30 2h1v1h-1zM2 3h1v1h-1zM8 3h1v1h-1zM10 3h1v1h-1zM11 3h1v1h-1zM13 3h1v1h-1zM14 3h1v1h-1zM15 3h1v1h-1zM16 3h1v1h-1zM17 3h1v1h-1zM19 3h1v1h-1zM22 3h1v1h-1zM24 3h1v1h-1zM30 3h1v1h-1zM2 4h1v1h-1zM4 4h1v1h-1zM5 4h1v1h-1zM6 4h1v1h-1zM8 4h1v1h-1zM11 4h1v1h-1zM12 4h1v1h-1zM13 4h1v1h-1zM20 4h1v1h-1zM24 4h1v1h-1zM26 4h1v1h-1zM27 4h1v1h-1zM28 4h1v1h-1zM30 4h1v1h-1zM2 5h1v1h-1zM4 5h1v1h-1zM5 5h1v1h-1zM6 5h1v1h-1zM8 5h1v1h-1zM10 5h1v1h-1zM11 5h1v1h-1zM13 5h1v1h-1zM14 5h1v1h-1zM15 5h1v1h-1zM18 5h1v1h-1zM19 5h1v1h-1zM21 5h1v1h-1zM24 5h1v1h-1zM26 5h1v1h-1zM27 5h1v1h-1zM28 5h1v1h-1zM30 5h1v1h-1zM2 6h1v1h-1zM4 6h1v1h-1zM5 6h1v1h-1zM6 6h1v1h-1zM8 6h1v1h-1zM12 6h1v1h-1zM14 6h1v1h-1zM16 6h1v1h-1zM18 6h1v1h-1zM20 6h1v1h-1zM21 6h1v1h-1zM22 6h1v1h-1zM24 6h1v1h-1zM26 6h1v1h-1zM27 6h1v1h-1zM28 6h1v1h-1zM30 6h1v1h-1zM2 7h1v1h-1zM8 7h1v1h-1zM10 7h1v1h-1zM12 7h1v1h-1zM14 7h1v1h-1zM16 7h1v1h-1zM17 7h1v1h-1zM20 7h1v1h-1zM24 7h1v1h-1zM30 7h1v1h-1zM2 8h1v1h-1zM3 8h1v1h-1zM4 8h1v1h-1zM5 8h1v1h-1zM6 8h1v1h-1zM7 8h1v1h-1zM8 8h1v1h-1zM10 8h1v1h-1zM12 8h1v1h-1zM14 8h1v1h-1zM16 8h1v1h-1zM18 8h1v1h-1zM20 8h1v1h-1zM22 8h1v1h-1zM24 8h1v1h-1zM25 8h1v1h-1zM26 8h1v1h-1zM27 8h1v1h-1zM28 8h1v1h-1zM29 8h1v1h-1zM30 8h1v1h-1zM13 9h1v1h-1zM16 9h1v1h-1zM22 9h1v1h-1zM2 10h1v1h-1zM3 10h1v1h-1zM4 10h1v1h-1zM5 10h1v1h-1zM6 10h1v1h-1zM8 10h1v1h-1zM9 10h1v1h-1zM10 10h1v1h-1zM11 10h1v1h-1zM12 10h1v1h-1zM16 10h1v1h-1zM18 10h1v1h-1zM19 10h1v1h-1zM22 10h1v1h-1zM23 10h1v1h-1zM25 10h1v1h-1zM27 10h1v1h-1zM29 10h1v1h-1zM3 11h1v1h-1zM7 11h1v1h-1zM10 11h1v1h-1zM11 11h1v1h-1zM13 11h1v1h-1zM18 11h1v1h-1zM20 11h1v1h-1zM21 11h1v1h-1zM22 11h1v1h-1zM23 11h1v1h-1zM24 11h1v1h-1zM25 11h1v1h-1zM26 11h1v1h-1zM30 11h1v1h-1zM2 12h1v1h-1zM8 12h1v1h-1zM9 12h1v1h-1zM10 12h1v1h-1zM11 12h1v1h-1zM17 12h1v1h-1zM19 12h1v1h-1zM20 12h1v1h-1zM25 12h1v1h-1zM26 12h1v1h-1zM3 13h1v1h-1zM4 13h1v1h-1zM5 13h1v1h-1zM10 13h1v1h-1zM11 13h1v1h-1zM12 13h1v1h-1zM14 13h1v1h-1zM16 13h1v1h-1zM17 13h1v1h-1zM21 13h1v1h-1zM23 13h1v1h-1zM25 13h1v1h-1zM26 13h1v1h-1zM27 13h1v1h-1zM29 13h1v1h-1zM2 14h1v1h-1zM5 14h1v1h-1zM8 14h1v1h-1zM10 14h1v1h-1zM11 14h1v1h-1zM13 14h1v1h-1zM15 14h1v1h-1zM16 14h1v1h-1zM17 14h1v1h-1zM18 14h1v1h-1zM19 14h1v1h-1zM22 14h1v1h-1zM25 14h1v1h-1zM27 14h1v1h-1zM28 14h1v1h-1zM3 15h1v1h-1zM4 15h1v1h-1zM5 15h1v1h-1zM9 15h1v1h-1zM10 15h1v1h-1zM12 15h1v1h-1zM13 15h1v1h-1zM14 15h1v1h-1zM17 15h1v1h-1zM18 15h1v1h-1zM21 15h1v1h-1zM22 15h1v1h-1zM23 15h1v1h-1zM24 15h1v1h-1zM25 15h1v1h-1zM26 15h1v1h-1zM30 15h1v1h-1zM3 16h1v1h-1zM5 16h1v1h-1zM6 16h1v1h-1zM7 16h1v1h-1zM8 16h1v1h-1zM9 16h1v1h-1zM11 16h1v1h-1zM15 16h1v1h-1zM16 16h1v1h-1zM17 16h1v1h-1zM22 16h1v1h-1zM25 16h1v1h-1zM26 16h1v1h-1zM27 16h1v1h-1zM28 16h1v1h-1zM2 17h1v1h-1zM3 17h1v1h-1zM4 17h1v1h-1zM7 17h1v1h-1zM9 17h1v1h-1zM11 17h1v1h-1zM16 17h1v1h-1zM20 17h1v1h-1zM26 17h1v1h-1zM29 17h1v1h-1zM3 18h1v1h-1zM6 18h1v1h-1zM7 18h1v1h-1zM8 18h1v1h-1zM9 18h1v1h-1zM10 18h1v1h-1zM11 18h1v1h-1zM16 18h1v1h-1zM17 18h1v1h-1zM18 18h1v1h-1zM19 18h1v1h-1zM20 18h1v1h-1zM23 18h1v1h-1zM27 18h1v1h-1zM28 18h1v1h-1zM2 19h1v1h-1zM4 19h1v1h-1zM9 19h1v1h-1zM10 19h1v1h-1zM11 19h1v1h-1zM12 19h1v1h-1zM13 19h1v1h-1zM17 19h1v1h-1zM18 19h1v1h-1zM19 19h1v1h-1zM20 19h1v1h-1zM21 19h1v1h-1zM22 19h1v1h-1zM23 19h1v1h-1zM24 19h1v1h-1zM25 19h1v1h-1zM26 19h1v1h-1zM28 19h1v1h-1zM30 19h1v1h-1zM2 20h1v1h-1zM6 20h1v1h-1zM8 20h1v1h-1zM12 20h1v1h-1zM14 20h1v1h-1zM15 20h1v1h-1zM16 20h1v1h-1zM17 20h1v1h-1zM19 20h1v1h-1zM22 20h1v1h-1zM24 20h1v1h-1zM26 20h1v1h-1zM28 20h1v1h-1zM2 21h1v1h-1zM5 21h1v1h-1zM6 21h1v1h-1zM7 21h1v1h-1zM9 21h1v1h-1zM11 21h1v1h-1zM12 21h1v1h-1zM13 21h1v1h-1zM14 21h1v1h-1zM17 21h1v1h-1zM21 21h1v1h-1zM22 21h1v1h-1zM23 21h1v1h-1zM24 21h1v1h-1zM25 21h1v1h-1zM29 21h1v1h-1zM2 22h1v1h-1zM3 22h1v1h-1zM8 22h1v1h-1zM9 22h1v1h-1zM10 22h1v1h-1zM12 22h1v1h-1zM16 22h1v1h-1zM18 22h1v1h-1zM21 22h1v1h-1zM22 22h1v1h-1zM23 22h1v1h-1zM24 22h1v1h-1zM25 22h1v1h-1zM26 22h1v1h-1zM28 22h1v1h-1zM29 22h1v1h-1zM30 22h1v1h-1zM10 23h1v1h-1zM11 23h1v1h-1zM13 23h1v1h-1zM14 23h1v1h-1zM15 23h1v1h-1zM16 23h1v1h-1zM18 23h1v1h-1zM22 23h1v1h-1zM26 23h1v1h-1zM27 23h1v1h-1zM28 23h1v1h-1zM29 23h1v1h-1zM30 23h1v1h-1zM2 24h1v1h-1zM3 24h1v1h-1zM4 24h1v1h-1zM5 24h1v1h-1zM6 24h1v1h-1zM7 24h1v1h-1zM8 24h1v1h-1zM10 24h1v1h-1zM11 24h1v1h-1zM14 24h1v1h-1zM17 24h1v1h-1zM18 24h1v1h-1zM19 24h1v1h-1zM20 24h1v1h-1zM21 24h1v1h-1zM22 24h1v1h-1zM24 24h1v1h-1zM26 24h1v1h-1zM27 24h1v1h-1zM28 24h1v1h-1zM2 25h1v1h-1zM8 25h1v1h-1zM12 25h1v1h-1zM13 25h1v1h-1zM16 25h1v1h-1zM17 25h1v1h-1zM22 25h1v1h-1zM26 25h1v1h-1zM2 26h1v1h-1zM4 26h1v1h-1zM5 26h1v1h-1zM6 26h1v1h-1zM8 26h1v1h-1zM10 26h1v1h-1zM11 26h1v1h-1zM12 26h1v1h-1zM15 26h1v1h-1zM16 26h1v1h-1zM22 26h1v1h-1zM23 26h1v1h-1zM24 26h1v1h-1zM25 26h1v1h-1zM26 26h1v1h-1zM28 26h1v1h-1zM29 26h1v1h-1zM2 27h1v1h-1zM4 27h1v1h-1zM5 27h1v1h-1zM6 27h1v1h-1zM8 27h1v1h-1zM10 27h1v1h-1zM13 27h1v1h-1zM14 27h1v1h-1zM16 27h1v1h-1zM18 27h1v1h-1zM19 27h1v1h-1zM20 27h1v1h-1zM21 27h1v1h-1zM27 27h1v1h-1zM28 27h1v1h-1zM30 27h1v1h-1zM2 28h1v1h-1zM4 28h1v1h-1zM5 28h1v1h-1zM6 28h1v1h-1zM8 28h1v1h-1zM10 28h1v1h-1zM11 28h1v1h-1zM14 28h1v1h-1zM15 28h1v1h-1zM17 28h1v1h-1zM18 28h1v1h-1zM19 28h1v1h-1zM22 28h1v1h-1zM23 28h1v1h-1zM24 28h1v1h-1zM25 28h1v1h-1zM26 28h1v1h-1zM27 28h1v1h-1zM28 28h1v1h-1zM29 28h1v1h-1zM2 29h1v1h-1zM8 29h1v1h-1zM10 29h1v1h-1zM12 29h1v1h-1zM13 29h1v1h-1zM14 29h1v1h-1zM16 29h1v1h-1zM17 29h1v1h-1zM20 29h1v1h-1zM22 29h1v1h-1zM23 29h1v1h-1zM25 29h1v1h-1zM27 29h1v1h-1zM29 29h1v1h-1zM2 30h1v1h-1zM3 30h1v1h-1zM4 30h1v1h-1zM5 30h1v1h-1zM6 30h1v1h-1zM7 30h1v1h-1zM8 30h1v1h-1zM10 30h1v1h-1zM12 30h1v1h-1zM14 30h1v1h-1zM16 30h1v1h-1zM17 30h1v1h-1zM18 30h1v1h-1zM19 30h1v1h-1zM20 30h1v1h-1zM21 30h1v1h-1zM26 30h1v1h-1zM28 30h1v1h-1z"/></svg></div>
+        <div>
+          <h2 data-t="qr_h">امسح الرمز وافتح الصفحة</h2>
+          <p data-t="qr_p">وجّه كاميرا الجوال نحو الرمز ليفتح لك صفحة الأستاذ مباشرة. يصلح للبطاقات واللوحات والمنشورات.</p>
+        </div>
+      </div>
+    </section>
+
     <footer>
       <div><span data-t="f_name">الأستاذ علي نوري المحمداوي</span><span class="mark"></span><span data-t="f_city">العمارة، ميسان</span><span class="mark"></span><span data-t="f_year">٢٠٢٦</span></div>
       <div class="credit"><span data-t="cr">تمت البرمجة من قبل</span> <strong data-t="crn">المهندس مجتبى ستار الخزعلي</strong></div>
@@ -820,10 +1093,10 @@
     var root = document.getElementById('root');
     var EN = {
       brand: 'Mr. Ali', n_about: 'About', n_cred: 'Credentials', n_method: 'Teaching', n_app: 'App', n_contact: 'Contact',
-      eyebrow: 'Teacher &amp; translator', h1s: 'Mr.', h1n: 'Ali Nouri Hashim Al-Muhammadawi',
+      eyebrow: 'Teacher &amp; translator', h1s: 'Mr.', h1n: 'Ali Nouri Hashim Al&#8209;Muhammadawi',
       sub: 'English teacher · Intermediate &amp; Preparatory',
       lead: 'Holds a master’s degree and works as a translator. He combines academic knowledge with modern teaching methods so every student gains clear understanding and real confidence in English.',
-      cta1: 'Call Mr. Ali', cta2: 'Address &amp; contact', where: 'Amarah, Maysan, Iraq',
+      cta1: 'Call Mr. Ali', cta2: 'Book a session', where: 'Amarah, Maysan, Iraq',
       soon: 'Coming soon', sealb: 'New<br>app!', badge: 'Master’s degree<br>Teacher &amp; translator',
       cred_tag: 'Qualifications', cred_h: 'A scholarly background you can trust',
       c1h: 'Master’s degree', c1p: 'A solid academic foundation that shows in accurate explanations and depth of knowledge.',
@@ -836,6 +1109,14 @@
       s1h: 'Intermediate stage', s1a: 'A strong base in grammar and vocabulary', s1b: 'Correct pronunciation and reading', s1c: 'Confidence in speaking and writing from day one',
       s2h: 'Preparatory stage', s2a: 'Advanced grammar and reading comprehension', s2b: 'Training on exam-style questions', s2c: 'Writing and conversation with clarity and confidence',
       p_tag: 'Practice with Mr. Ali', p_h: 'Test your English level',
+      sx1: 'Years of teaching experience', sx2: 'Student success rate', sx3: 'School stages',
+      qr_h: 'Scan to open the page', qr_p: 'Point your phone camera at the code to open Mr. Ali’s page directly. Handy for cards, signs and posts.',
+      b_tag: 'Book a session', b_h: 'Booking request for Mr. Ali',
+      b_name: 'Name', b_phone: 'Phone number', b_req: '(required)', b_opt: '(optional)', b_stage: 'School stage', b_mid: 'Intermediate', b_prep: 'Preparatory',
+      b_grade: 'Grade', b_time: 'Preferred time', tm_any: 'Any time', tm_m: 'Morning', tm_a: 'Afternoon', tm_e: 'Evening', b_note: 'Notes',
+      b_submit: 'Prepare my booking request', b_hint: 'The request opens in Mr. Ali’s WhatsApp with a ready message, and you confirm it by sending. When the app launches, booking will move there.',
+      d_h: 'Your request is ready', d_p: 'One step left: open WhatsApp and press send so the request reaches Mr. Ali. A booking is not confirmed until he replies.',
+      d_wa: 'Open WhatsApp and send the request', d_copy: 'Copy request text', d_edit: 'Edit request',
       m_tag: 'Teaching method', m_h: 'The best teaching methods', m_p: 'A clear, step-by-step approach that puts the student at the centre of learning.',
       t1h: 'Simple explanations', t1p: 'He starts from the student’s level and builds step by step until it sticks.',
       t2h: 'Hands-on practice', t2p: 'Examples and exercises turn understanding into a skill students use on their own.',
@@ -955,7 +1236,7 @@
       var io = new IntersectionObserver(function (es) {
         es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } });
       }, { threshold: 0.12 });
-      document.querySelectorAll('.band, .stage, .step, .about .text, .app, .contact, .sec-head, .marquee, .quiz, .wotd').forEach(function (el) {
+      document.querySelectorAll('.band, .stage, .step, .about .text, .app, .contact, .sec-head, .marquee, .quiz, .wotd, .stats, .share, .book').forEach(function (el) {
         el.classList.add('rv');
         io.observe(el);
       });
@@ -1323,6 +1604,161 @@
         if (t < 3400) requestAnimationFrame(frame); else c.remove();
       })(t0);
     };
+  })();
+</script>
+
+<script>
+  (function () {
+    var nums = document.querySelectorAll('.stat .n');
+    var reduce = !!(window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches);
+    if (reduce || !('IntersectionObserver' in window)) return;
+    var io = new IntersectionObserver(function (es) {
+      es.forEach(function (e) {
+        if (!e.isIntersecting) return;
+        io.unobserve(e.target);
+        var el = e.target, to = +el.dataset.to, t0 = performance.now(), dur = 1600;
+        (function f(now) {
+          var p = Math.min(1, (now - t0) / dur);
+          el.textContent = Math.round(to * (1 - Math.pow(1 - p, 3)));
+          if (p < 1) requestAnimationFrame(f);
+        })(t0);
+      });
+    }, { threshold: 0.6 });
+    nums.forEach(function (n) { io.observe(n); });
+  })();
+</script>
+
+<script>
+  (function () {
+    var PG = window.PG;
+    var L = function () { return PG && PG.lang ? PG.lang() : 'ar'; };
+    var form = document.getElementById('bform');
+    var done = document.getElementById('bdone');
+    var nameEl = document.getElementById('b_name');
+    var phoneEl = document.getElementById('b_phone');
+    var gradeEl = document.getElementById('b_grade');
+    var timeEl = document.getElementById('b_time');
+    var noteEl = document.getElementById('b_note');
+
+    var GR = {
+      ar: { mid: ['الأول المتوسط', 'الثاني المتوسط', 'الثالث المتوسط'], prep: ['الرابع الإعدادي', 'الخامس الإعدادي', 'السادس الإعدادي'], none: 'اختر المرحلة أولاً' },
+      en: { mid: ['1st Intermediate', '2nd Intermediate', '3rd Intermediate'], prep: ['4th Preparatory', '5th Preparatory', '6th Preparatory'], none: 'Choose the stage first' }
+    };
+    var M = {
+      ar: {
+        name: 'اكتب اسمك.', phone: 'اكتب رقم الهاتف.', badPhone: 'رقم الهاتف غير صحيح. اكتب رقماً عراقياً مثل 07701234567.', stage: 'اختر المرحلة الدراسية.',
+        stages: { mid: 'المتوسطة', prep: 'الإعدادية' }, times: { any: 'أي وقت', morning: 'صباحاً', afternoon: 'بعد الظهر', evening: 'مساءً' },
+        hello: 'السلام عليكم أستاذ علي، أرغب بحجز موعد.', f: { name: 'الاسم', stage: 'المرحلة', grade: 'الصف', time: 'الوقت المفضل', phone: 'رقم الهاتف', note: 'ملاحظات' },
+        copied: 'تم النسخ', copyfail: 'حدّد النص وانسخه', copy: 'نسخ نص الطلب',
+        ph: { name: 'مثال: أحمد علي', phone: '07701234567', note: 'اكتب ما تريد أن يعرفه الأستاذ' }
+      },
+      en: {
+        name: 'Please enter your name.', phone: 'Please enter your phone number.', badPhone: 'The phone number looks wrong. Use an Iraqi number such as 07701234567.', stage: 'Please choose a school stage.',
+        stages: { mid: 'Intermediate', prep: 'Preparatory' }, times: { any: 'Any time', morning: 'Morning', afternoon: 'Afternoon', evening: 'Evening' },
+        hello: 'Hello Mr. Ali, I would like to book a session.', f: { name: 'Name', stage: 'Stage', grade: 'Grade', time: 'Preferred time', phone: 'Phone', note: 'Notes' },
+        copied: 'Copied', copyfail: 'Select the text and copy it', copy: 'Copy request text',
+        ph: { name: 'e.g. Ahmed Ali', phone: '07701234567', note: 'Tell Mr. Ali anything he should know' }
+      }
+    };
+    var AR_IN = '٠١٢٣٤٥٦٧٨٩', FA_IN = '۰۱۲۳۴۵۶۷۸۹';
+    function digits(s) {
+      return s.replace(/[٠-٩۰-۹]/g, function (c) { var i = AR_IN.indexOf(c); return String(i > -1 ? i : FA_IN.indexOf(c)); });
+    }
+    function normPhone(raw) {
+      var s = digits(raw).replace(/[\s\-().]/g, '');
+      if (!s) return { empty: true };
+      if (s.indexOf('+964') === 0) s = '0' + s.slice(4);
+      else if (s.indexOf('00964') === 0) s = '0' + s.slice(5);
+      else if (s.indexOf('964') === 0 && s.length === 13) s = '0' + s.slice(3);
+      else if (/^7\d{9}$/.test(s)) s = '0' + s;
+      return /^07\d{9}$/.test(s) ? { ok: true, v: s } : { bad: true };
+    }
+    function stageVal() { var c = form.querySelector('input[name="stage"]:checked'); return c ? c.value : ''; }
+
+    function fillGrades() {
+      var st = stageVal(), g = GR[L()];
+      var prev = gradeEl.value;
+      gradeEl.innerHTML = '';
+      if (!st) {
+        var o = document.createElement('option'); o.value = ''; o.textContent = g.none; gradeEl.appendChild(o);
+        gradeEl.disabled = true;
+        return;
+      }
+      gradeEl.disabled = false;
+      g[st].forEach(function (t, i) {
+        var o = document.createElement('option'); o.value = String(i); o.textContent = t; gradeEl.appendChild(o);
+      });
+      if (prev && gradeEl.querySelector('option[value="' + prev + '"]')) gradeEl.value = prev;
+    }
+    function placeholders() {
+      var m = M[L()].ph;
+      nameEl.placeholder = m.name; phoneEl.placeholder = m.phone; noteEl.placeholder = m.note;
+    }
+    function showErr(id, msg, input) {
+      var el = document.getElementById(id);
+      if (msg) { el.textContent = msg; el.hidden = false; } else { el.hidden = true; el.textContent = ''; }
+      if (input) { if (msg) input.setAttribute('aria-invalid', 'true'); else input.removeAttribute('aria-invalid'); }
+    }
+    function clearErrs() { showErr('e_name', '', nameEl); showErr('e_phone', '', phoneEl); showErr('e_stage', ''); }
+
+    form.addEventListener('change', function (e) { if (e.target.name === 'stage') { fillGrades(); showErr('e_stage', ''); } });
+    nameEl.addEventListener('input', function () { showErr('e_name', '', nameEl); });
+    phoneEl.addEventListener('input', function () { showErr('e_phone', '', phoneEl); });
+
+    var lastText = '', lastHref = '';
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var m = M[L()], bad = null;
+      clearErrs();
+      var name = nameEl.value.trim();
+      var ph = normPhone(phoneEl.value);
+      var st = stageVal();
+      if (!name) { showErr('e_name', m.name, nameEl); bad = bad || nameEl; }
+      if (ph.empty) { showErr('e_phone', m.phone, phoneEl); bad = bad || phoneEl; }
+      else if (ph.bad) { showErr('e_phone', m.badPhone, phoneEl); bad = bad || phoneEl; }
+      if (!st) { showErr('e_stage', m.stage); bad = bad || form.querySelector('#st_mid'); }
+      if (bad) { bad.focus(); return; }
+
+      var lines = [m.hello, ''];
+      lines.push(m.f.name + ': ' + name);
+      lines.push(m.f.stage + ': ' + m.stages[st]);
+      if (gradeEl.value !== '' && !gradeEl.disabled) lines.push(m.f.grade + ': ' + gradeEl.options[gradeEl.selectedIndex].textContent);
+      lines.push(m.f.time + ': ' + m.times[timeEl.value]);
+      lines.push(m.f.phone + ': ' + ph.v);
+      var note = noteEl.value.trim();
+      if (note) lines.push(m.f.note + ': ' + note);
+      lastText = lines.join('\n');
+      lastHref = 'https://wa.me/9647711157732?text=' + encodeURIComponent(lastText);
+
+      document.getElementById('bmsg').textContent = lastText;
+      document.getElementById('b_wa').href = lastHref;
+      try { localStorage.setItem('book', JSON.stringify({ n: name, p: ph.v })); } catch (x) {}
+      form.hidden = true;
+      done.hidden = false;
+      done.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    });
+
+    document.getElementById('b_edit').addEventListener('click', function () {
+      done.hidden = true; form.hidden = false; nameEl.focus();
+    });
+    var cb = document.getElementById('b_copy');
+    function flash(k) { cb.textContent = M[L()][k]; setTimeout(function () { cb.textContent = M[L()].copy; }, 1800); }
+    cb.addEventListener('click', function () {
+      function fb() {
+        try { var r = document.createRange(); r.selectNodeContents(document.getElementById('bmsg')); var s = window.getSelection(); s.removeAllRanges(); s.addRange(r); } catch (x) {}
+        flash('copyfail');
+      }
+      try { navigator.clipboard.writeText(lastText).then(function () { flash('copied'); }, fb); } catch (x) { fb(); }
+    });
+
+    try {
+      var saved = JSON.parse(localStorage.getItem('book') || 'null');
+      if (saved) { nameEl.value = saved.n || ''; phoneEl.value = saved.p || ''; }
+    } catch (x) {}
+
+    PG.hooks.push(function () { clearErrs(); fillGrades(); placeholders(); if (!done.hidden) { done.hidden = true; form.hidden = false; } });
+    fillGrades();
+    placeholders();
   })();
 </script>
 
